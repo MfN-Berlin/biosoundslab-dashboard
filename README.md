@@ -1,4 +1,6 @@
 # ecomon-dashboard
+Part of the BioSoundsLab project.
+
 
 ## Development
 
