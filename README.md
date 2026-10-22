@@ -1,4 +1,4 @@
-# ecomon-dashboard
+# BioSoundsLab-dashboard
 
 ## Development
 
@@ -10,6 +10,6 @@ For local development, that would be the address of the local service as seen fr
 
 Start the ecomon dev environment from the ecomon project.
 
-Start the dashboard using docker compose in ecomon-dashboard
+Start the dashboard using docker compose in BioSoundsLab-dashboard
 
 Go to localhost:3000 and open the dashboard page.
