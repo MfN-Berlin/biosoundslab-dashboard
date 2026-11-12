@@ -317,6 +317,21 @@ position: relative;
   margin-left: 0; /* Remove unnecessary left margin */
   margin-right: 0; /* Remove unnecessary right margin */
 }
+#threshold, #threshold_label label, #threshold_save_btn, #threshold_save_menu_btn,
+#threshold_unlock_btn {
+  margin-bottom: 1rem;
+}
+#threshold_input .form-group {
+  margin-bottom: 0;
+}
+
+/* Keep the Save button greyed out while disabled (default threshold shown) */
+#threshold_save_btn:disabled,
+#threshold_save_btn:disabled:hover {
+  color: #6c757d !important;
+  background-color: transparent !important;
+  border-color: #dee2e6 !important;
+}
 
 .options-bar {
   display: flex;

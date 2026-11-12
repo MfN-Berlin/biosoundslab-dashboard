@@ -71,11 +71,52 @@ threshold_input <- tags$div(
   id = "threshold_container",
   style = "position: absolute; top: 1em; gap: 0.5em; display: flex; align-items: center;",
   threshold_menu,
-  tags$label("Threshold", `for` = "threshold", style = "margin-top: 0em; margin-right: 0.5em; font-size: small; max-width: 40%;"),
+  uiOutput("threshold_label"),
   uiOutput("threshold_input"),
-  tags$small(
-    "Range: 0.1 to 1.00",
-    style = "margin-top: 0em; color: #6c757d; white-space: nowrap; font-size: 0.75em; margin-right: 0.5em;" # Hint styling
+  # Lock shown when a final threshold is displayed (renders nothing otherwise)
+  uiOutput("threshold_unlock_ui"),
+  # Save button with a menu to choose which threshold type to save as
+  tags$div(
+    class = "btn-group",
+    role = "group",
+    uiOutput("threshold_save_ui"),
+    tags$button(
+      type = "button",
+      id = "threshold_save_menu_btn",
+      class = "btn btn-outline-secondary dropdown-toggle dropdown-toggle-split",
+      `data-bs-toggle` = "dropdown",
+      `aria-expanded` = "false",
+      title = "Save as...",
+      style = "font-size: 0.75em;",
+      tags$span(class = "visually-hidden", "Toggle save menu")
+    ),
+    tags$ul(
+      class = "dropdown-menu",
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('threshold_save_as_experimental_btn', Math.random()); return false;",
+          "Save as experimental threshold"
+        )
+      ),
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('threshold_save_as_preliminary_btn', Math.random()); return false;",
+          "Save as preliminary threshold"
+        )
+      ),
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('threshold_save_as_final_btn', Math.random()); return false;",
+          "Save as final threshold"
+        )
+      )
+    )
   ),
   uiOutput("threshold_status")
 )
