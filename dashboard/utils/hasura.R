@@ -365,6 +365,66 @@ get_latest_final_threshold <- function(label_id, model_id) {
   return(NULL)
 }
 
+# Fetch the latest threshold of a given type for a label and model
+get_latest_threshold_by_type <- function(label_id, model_id, threshold_type) {
+  cat("Fetching latest", threshold_type, "threshold for label_id:", label_id, "model_id:", model_id, "\n")
+
+  query <- sprintf('
+    query GetLatestThresholdByType {
+      thresholds(
+        where: {
+          label_id: { _eq: %d }
+          model_id: { _eq: %d }
+          threshold_type: { _eq: "%s" }
+        }
+        order_by: { set_at: desc }
+        limit: 1
+      ) {
+        threshold
+        threshold_type
+      }
+    }
+  ', label_id, model_id, threshold_type)
+
+  data <- tryCatch({
+    execute_graphql_query(query, paste("Latest", threshold_type, "threshold"))
+  }, error = function(e) {
+    message("Error executing GraphQL query:", e$message)
+    return(NULL)
+  })
+
+  # Legacy rows may have a NULL threshold_type; they are treated as experimental
+  if (is.null(data) || !is.list(data) || !exists("thresholds", where = data) ||
+      is.null(data$thresholds) || length(data$thresholds) == 0) {
+    if (threshold_type == "experimental") {
+      query_null <- sprintf('\n      query GetLatestNullThreshold {\n        thresholds(\n          where: {\n            label_id: { _eq: %d }\n            model_id: { _eq: %d }\n            threshold_type: { _is_null: true }\n          }\n          order_by: { set_at: desc }\n          limit: 1\n        ) {\n          threshold\n          threshold_type\n        }\n      }\n    ', label_id, model_id)
+
+      data <- tryCatch({
+        execute_graphql_query(query_null, "Latest null threshold")
+      }, error = function(e) {
+        message("Error executing GraphQL query:", e$message)
+        return(NULL)
+      })
+    }
+  }
+
+  if (is.list(data) && exists("thresholds", where = data) && !is.null(data$thresholds) && length(data$thresholds) > 0) {
+    first_elem <- data$thresholds[[1]]
+
+    if (is.list(first_elem) && length(first_elem) > 0 && !is.null(names(first_elem))) {
+      return(list(threshold = first_elem$threshold, threshold_type = first_elem$threshold_type))
+    } else if (is.numeric(first_elem)) {
+      # Old format - just a numeric value
+      message("Warning: Received numeric value instead of object from GraphQL")
+      return(list(threshold = first_elem, threshold_type = threshold_type))
+    } else {
+      message("Unexpected data structure in thresholds: ", str(first_elem))
+      return(NULL)
+    }
+  }
+  return(NULL)
+}
+
 # Store the current threshold value in the thresholds table
 store_threshold <- function(label_id, model_id, threshold_value, threshold_type = "experimental") {
   cat("Storing threshold for label_id:", label_id, "model_id:", model_id, "threshold:", threshold_value, "type:", threshold_type, "\n")

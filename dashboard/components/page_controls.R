@@ -29,12 +29,39 @@ threshold_menu <- tags$div(
     tags$ul(
       class = "dropdown-menu",
       `aria-labelledby` = "thresholdMenuButton",
-      uiOutput("set_experimental_threshold_menu_item"),
-      uiOutput("set_preliminary_threshold_menu_item"),
-      uiOutput("reset_threshold_menu_item"),
-      uiOutput("reset_to_last_db_value_menu_item"),
-      # Menu item rendered from server so it can be enabled/disabled based on state
-      uiOutput("set_final_threshold_menu_item")
+      # Read-only items that display a stored/system threshold value
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('show_default_threshold_btn', Math.random()); return false;",
+          "Show default threshold"
+        )
+      ),
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('show_experimental_threshold_btn', Math.random()); return false;",
+          "Show experimental threshold"
+        )
+      ),
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('show_preliminary_threshold_btn', Math.random()); return false;",
+          "Show preliminary threshold"
+        )
+      ),
+      tags$li(
+        tags$a(
+          class = "dropdown-item",
+          href = "#",
+          onclick = "Shiny.setInputValue('show_final_threshold_btn', Math.random()); return false;",
+          "Show final threshold"
+        )
+      )
     )
   )
 )
